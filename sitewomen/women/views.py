@@ -1,16 +1,85 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound
+from django.shortcuts import render, get_object_or_404
+
+from .models import Women, Category, TagPost
+
+menu = [{'title': "О Сайте", 'url_name': 'about'},
+        {'title': "Добавить статью", 'url_name': 'add_page'},
+        {'title': "Обратная связь", 'url_name': 'contact'},
+        {'title': "Войти", 'url_name': 'login'}
+        ]
+
+data_db = [
+    {'id': 1, 'title': 'Анджелина Джоли', 'content': 'Биография Анджелины Джоли', 'is_published': True},
+    {'id': 2, 'title': 'Марго Робби', 'content': 'Биография Марго Робби', 'is_published': False},
+    {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулия Робертс', 'is_published': True},
+]
 
 
 def index(request):
-    for i in request:
-        print(i)
-    return HttpResponse("Страница приложения women.")
+    posts = Women.published.all()
+    # print(request.GET)
+    data = {
+        'title': 'Главная страница',
+        'menu': menu,
+        'posts': posts,
+    }
+    return render(request, 'women/index.html', context=data)
 
 
-def categories(request, cat_id):
-    return HttpResponse(f"<h1>Статьи по категориям</h1><p>id:{cat_id}</p>")
+def about(request):
+    return render(request, 'women/about.html', {'title': 'О Сайте', 'menu': menu})
 
 
-def categories_by_slug(request, cat_slug):
-    return HttpResponse(f"<h1>Статьи по категориям</h1><p>slug:{cat_slug}</p>")
+def show_post(request, post_slug):
+    # Пытается найти запись в модели Women по полю slug, равному post_slug
+    # Если запись найдена — возвращает её
+    # Если не найдена — автоматически вызывает Http404 (страница "Not Found")
+    post = get_object_or_404(Women, slug=post_slug)
+
+    data = {
+        'title': post.title,
+        'menu': menu,
+        'post': post,
+        'cat_selected': 1
+    }
+
+    return render(request, 'women/post.html', data)
+
+
+def addpage(request):
+    return HttpResponse('Добавление статью')
+
+
+def contact(request):
+    return HttpResponse('Обратная связь')
+
+
+def login(request):
+    return HttpResponse('Авторизация')
+
+
+def page_not_found(request, exception):
+    return HttpResponseNotFound("<h1>Страница не найдена</h1>")
+
+
+def show_category(request, cat_slug):
+    category = get_object_or_404(Category, slug=cat_slug)
+    posts = Women.published.filter(cat_id=category.pk)
+    data = {
+        'title': f'Рубрика: {category.name}',
+        'menu': menu,
+        'posts': posts,
+        'cat_selectef': category.pk
+    }
+    return index(request)
+
+
+def show_tag_postlist(request, tag_slug):
+    tag = get_object_or_404(TagPost, slug=tag_slug)
+    past = tag.tags.filter(is_publised=Women.Status.PUBLISHED)
+
+    data = {
+        'title': f'Тег: {tag.tag}',
+
+    }
