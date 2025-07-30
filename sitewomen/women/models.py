@@ -9,7 +9,7 @@ class PublishedManager(models.Manager):
 
 
 class Women(models.Model):
-    # Свое перечисление, понятное
+    # Свое перечисление, 'понятное'
     class Status(models.IntegerChoices):
         DRAFT = 0, 'Черновик'
         PUBLISHED = 1, 'Опубликовано'

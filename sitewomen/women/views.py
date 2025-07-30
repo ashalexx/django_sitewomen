@@ -66,20 +66,24 @@ def page_not_found(request, exception):
 def show_category(request, cat_slug):
     category = get_object_or_404(Category, slug=cat_slug)
     posts = Women.published.filter(cat_id=category.pk)
+
     data = {
         'title': f'Рубрика: {category.name}',
         'menu': menu,
         'posts': posts,
-        'cat_selectef': category.pk
+        'cat_selected': category.pk
     }
-    return index(request)
+    return render(request, 'women/index.html', context=data)
 
 
 def show_tag_postlist(request, tag_slug):
     tag = get_object_or_404(TagPost, slug=tag_slug)
-    past = tag.tags.filter(is_publised=Women.Status.PUBLISHED)
+    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED)
 
     data = {
         'title': f'Тег: {tag.tag}',
-
+        'menu': menu,
+        'posts': posts,
+        'cat_selected': None
     }
+    return render(request, 'women/index.html', context=data)
