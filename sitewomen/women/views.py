@@ -9,15 +9,10 @@ menu = [{'title': "О Сайте", 'url_name': 'about'},
         {'title': "Войти", 'url_name': 'login'}
         ]
 
-data_db = [
-    {'id': 1, 'title': 'Анджелина Джоли', 'content': 'Биография Анджелины Джоли', 'is_published': True},
-    {'id': 2, 'title': 'Марго Робби', 'content': 'Биография Марго Робби', 'is_published': False},
-    {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулия Робертс', 'is_published': True},
-]
-
 
 def index(request):
-    posts = Women.published.all()
+    # загрузка всех данных через один запрос
+    posts = Women.published.all().select_related('cat')
     # print(request.GET)
     data = {
         'title': 'Главная страница',
@@ -65,7 +60,7 @@ def page_not_found(request, exception):
 
 def show_category(request, cat_slug):
     category = get_object_or_404(Category, slug=cat_slug)
-    posts = Women.published.filter(cat_id=category.pk)
+    posts = Women.published.filter(cat_id=category.pk).select_related('cat')
 
     data = {
         'title': f'Рубрика: {category.name}',
