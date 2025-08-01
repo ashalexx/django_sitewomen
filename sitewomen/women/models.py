@@ -1,6 +1,7 @@
 from tkinter.font import names
 
 from django.db import models
+from django.template.defaultfilters import slugify
 from django.urls import reverse
 
 
@@ -45,6 +46,13 @@ class Women(models.Model):
 
     def get_absolute_url(self):
         return reverse('post', kwargs={'post_slug': self.slug})
+
+    # сохраняем slug не вводя его отдельно поле !НЕ работает с русским алфавитом
+    # можно исправить костылем - словарем возврата русских-англ букв
+    # def save(self, *args, **kwargs):
+    #     self.slug = slugify(self.title)
+    #     # вызываем базовый класс и метод save()
+    #     super().save(*args, **kwargs)
 
 
 class Category(models.Model):

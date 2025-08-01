@@ -24,6 +24,17 @@ class MarriedFilter(admin.SimpleListFilter):
 
 @admin.register(Women)
 class WomenAdmin(admin.ModelAdmin):
+    # Прописываем только те поля которые будут отображаться в форе админкии
+    fields = ['title', 'content', 'slug', 'cat', 'husband', 'tags']
+    # Исключает поля из формы, в данном примере поле 'tags' отображаться на админ панели не будет
+    # exclude = ['tags']
+    # поля только для чтения
+    # readonly_fields = ['slug']
+    # автоматическое формирование поля slug по полю title !поле slug должно быть редактируемым
+    prepopulated_fields = {'slug': ('title',)}
+    # меняем отображение Тэгов в удобную для нас форму
+    # filter_horizontal = ['tags']
+    filter_vertical = ['tags']
     # отображение
     list_display = ('title', 'time_create', 'is_published', 'cat', 'brief_info')
     # кликабельность
