@@ -3,6 +3,25 @@ from django.contrib import admin, messages
 from .models import Women, Category
 
 
+# создаем собственный фильтр на панели фильтров
+class MarriedFilter(admin.SimpleListFilter):
+    title = 'Статус у женщин'
+    parameter_name = 'status'
+
+    def lookups(self, request, model_admin):
+        return [
+            ('married', 'Замужем'),
+            ('single', 'Не замужем')
+        ]
+
+    def queryset(self, request, queryset):
+        value = self.value()
+        if value == 'married':
+            return queryset.filter(husband__isnull=False)
+        else:
+            return queryset.filter(husband__isnull=True)
+
+
 @admin.register(Women)
 class WomenAdmin(admin.ModelAdmin):
     # отображение
@@ -17,7 +36,7 @@ class WomenAdmin(admin.ModelAdmin):
     list_per_page = 3
     actions = ['set_published', 'set_druft']
     search_fields = ['title', 'cat__name']
-    list_filter = ['cat__name', 'is_published']
+    list_filter = [MarriedFilter, 'cat__name', 'is_published']
 
     # создаем собственное поле отображаемое в админпанели
     # с отображением на русском языке за счет декоратора
