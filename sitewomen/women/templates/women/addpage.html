@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+<form action="" method="post">
+    {% csrf_token %}
+    <p><label for="id_1">Текст: </label><input type="text" id="id_1" name="filed_text"></p>
+    <p><button type="submit">Отправить</button> </p>
+</form>
+{% endblock %}
