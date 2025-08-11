@@ -48,13 +48,15 @@ def addpage(request):
         form = AddPostForm(request.POST)
         if form.is_valid():
             # print(form.cleaned_data)
-            try:
-                # распаковка и сохранение в БД
-                Women.objects.create(**form.cleaned_data)
-                # перенаправляемся на главную страницу
-                return redirect('home')
-            except:
-                form.add_error(None, 'Ошибка добавления поста')
+            # try:
+            #     # распаковка и сохранение в БД
+            #     Women.objects.create(**form.cleaned_data)
+            #     # перенаправляемся на главную страницу
+            #     return redirect('home')
+            # except:
+            #     form.add_error(None, 'Ошибка добавления поста')
+            form.save()
+            return redirect('home')
     else:
         form = AddPostForm()
 
