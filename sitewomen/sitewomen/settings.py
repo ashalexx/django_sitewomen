@@ -1,7 +1,7 @@
 from pathlib import Path
 import os.path
 
-from django.conf.global_settings import STATICFILES_DIRS
+from django.conf.global_settings import STATICFILES_DIRS, MEDIA_ROOT
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -115,7 +115,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATICFILES_DIRS = [BASE_DIR / 'sitewomen/static/']
+STATICFILES_DIRS = [
+    BASE_DIR / 'sitewomen/static/'
+]
+
+# каталог в котором будут размещаться все медиафайлы
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
